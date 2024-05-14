@@ -225,7 +225,31 @@ vim.keymap.set("n", "<leader>h", "<Plug>(MyPluginAction)")
 
 ## :zap: Initialization
 
-<!-- TODO -->
+### :x: DON'T
+
+...force users to use a specific plugin manager or to call a `setup` function
+in order to be able to use your plugin.
+
+> [!WARNING]
+>
+> This one often sparks heated debates.
+> I have written in detail about the various reasons 
+> why this is an anti pattern [here](https://mrcjkb.dev/posts/2023-08-22-setup.html).
+>
+> - If you still disagree, feel free to open an issue.
+
+These are the rare cases in which a `setup` function 
+for initialization could be useful:
+
+- You want your plugin to be compatible with Neovim <= 0.6.
+- *And* your plugin is actually multiple plugins in a monorepo.
+- *Or* you're integrating with another plugin that *forces* you to do so.
+
+### :white_check_mark: DO
+
+- Cleanly separate configuration and initialization.
+- Automatically initialize your plugin *(smartly)*,
+  with minimal impact on startup time (see the next section).
 
 ## :sleeping_bed: Lazy loading
 
