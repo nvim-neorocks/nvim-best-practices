@@ -40,7 +40,7 @@ For Nix users:
 
 ...pollute the command namespace with a command for each action.
 
-#### Example
+**Example:**
 
 - `:RocksInstall {arg}`
 - `:RocksPrune {arg}`
@@ -55,7 +55,7 @@ command completion.
 ...gather subcommands under scoped commands
 and implement completions for each subcommand.
 
-#### Example
+**Example:**
 
 - `:Rocks install {arg}`
 - `:Rocks prune {arg}`
@@ -114,9 +114,9 @@ local subcommand_tbl = {
         complete = function(subcmd_arg_lead)
             -- Simplified example
             local install_args = {
-                'neorg',
-                'rest.nvim',
-                'rustaceanvim',
+                "neorg",
+                "rest.nvim",
+                "rustaceanvim",
             }
             return vim.iter(install_args)
                 :filter(function(install_arg)
@@ -209,17 +209,109 @@ This can easily lead to conflicts.
 - Even if your plugin is not installed or disabled,
   creating the keymap won't lead to an error.
 
-#### Example
+***Example:**
 
 In your plugin:
 
 ```lua
-vim.keymap.set('n', '<Plug>(MyPluginAction)', function() print("Hello") end, { noremap = true })
+vim.keymap.set("n", "<Plug>(MyPluginAction)", function() print("Hello") end, { noremap = true })
 ```
 
 In the user's config:
 
 ```lua
-vim.keymap.set('n', '<leader>h', '<Plug>(MyPluginAction)')
+vim.keymap.set("n", "<leader>h", "<Plug>(MyPluginAction)")
 ```
 
+## :zzz: Initialization
+
+<!-- TODO -->
+
+## :sleeping_bed: Lazy loading
+
+### :x: DON'T
+
+...rely on plugin managers to take care of lazy loading for you.
+
+- Making sure a plugin doesn't unnecessarily impact startup time
+  should be the responsibility of plugin authors, not users.
+- A plugin's functionality may evolve over time, potentially
+  leading to breakage if it's the user who has to worry about
+  lazy loading.
+- A plugin that implements its own lazy initialization properly
+  will likely have less overhead than the mechanisms used by a
+  plugin manager or user to load that plugin lazily.
+
+### :white_check_mark: DO
+
+...think carefully about when which parts of your plugin need to be loaded.
+
+**Is there any functionality that is specific to a filetype?**
+
+- Put your initialization logic in a `ftplugin/{filetype}.lua` script.
+- See `:h filetype`.
+
+**Example:**
+
+```lua
+-- ftplugin/rust.lua
+if not vim.g.did_my_rust_plugin_init then
+    -- Initialise
+end
+vim.g.did_my_rust_plugin_init = true
+
+local bufnr = vim.api.nvim_get_current_buf()
+-- do something specific to this buffer, e.g. add a <Plug> mapping or create a command
+vim.keymap.set("n", "<Plug>(MyPluginBufferAction)", function() 
+    print("Hello")
+end, { noremap = true, buffer = bufnr, })
+```
+
+**Is your plugin *not* filetype-specific, but it likely
+won't be needed every single time a user opens a Neovim session?**
+
+Don't eagerly `require` your lua modules.
+
+**Example:**
+
+Instead of:
+
+```lua
+local foo = require("foo")
+vim.api.nvim_create_user_command("MyCommand", function()
+    foo.do_something()
+end, {
+  -- ...
+})
+```
+
+...which will eagerly load the `foo` module,
+and any modules it eagerly imports, you can lazy load it
+by moving the `require` into the command's implementation.
+
+```lua
+vim.api.nvim_create_user_command("MyCommand", function()
+    local foo = require("foo")
+    foo.do_something()
+end, {
+  -- ...
+})
+```
+
+> [!TIP]
+>
+> For a Vimscript equivalent to `require`, see `:h autoload`.
+
+> [!NOTE]
+>
+> - What about eagerly creating user commands at startup?
+> - Wouldn't it be better to rely on a plugin manager to lazy load my plugin
+>   via a user command and/or autocommand?
+>
+> No! To be able to lazy load your plugin with a user command,
+> a plugin manager [has to itself create a user command](https://github.com/folke/lazy.nvim/blob/e44636a43376e8a1e851958f7e9cbe996751d59f/lua/lazy/core/handler/cmd.lua#L16).
+> This works great for plugins that don't implement proper lazy loading,
+> but it just adds overhead for those that do.
+> The same applies to [autocommands](https://github.com/folke/lazy.nvim/blob/e44636a43376e8a1e851958f7e9cbe996751d59f/lua/lazy/core/handler/event.lua#L68)
+> [keymaps](https://github.com/folke/lazy.nvim/blob/e44636a43376e8a1e851958f7e9cbe996751d59f/lua/lazy/core/handler/keys.lua#L112),
+> etc.
