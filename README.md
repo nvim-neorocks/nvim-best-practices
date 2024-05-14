@@ -182,3 +182,44 @@ vim.api.nvim_create_user_command("Rocks", my_cmd, {
 #### :books: Further reading
 
 - `:h lua-guide-commands-create`
+
+## :keyboard: Keymaps
+
+### :x: DON'T
+
+...create any keymaps automatically (unless they are not controversial).
+This can easily lead to conflicts.
+
+### :x: DON'T
+
+...define a fancy DSL for enabling keymaps via a `setup` function.
+
+- You will have to implement and document it yourself.
+- What if someone else comes up with a slightly different DSL?
+  This will lead to inconsistencies and confusion.
+- If a user has to call a `setup` function to set keymaps,
+  it will cause an error if your plugin is not installed or disabled.
+- Neovim already has a built-in API for this.
+
+### :white_check_mark: DO
+
+...provide `:h <Plug>` mappings to allow users to define their own keymaps.
+
+- It requires one line of code in user configs.
+- Even if your plugin is not installed or disabled,
+  creating the keymap won't lead to an error.
+
+#### Example
+
+In your plugin:
+
+```lua
+vim.keymap.set('n', '<Plug>(MyPluginAction)', function() print("Hello") end, { noremap = true })
+```
+
+In the user's config:
+
+```lua
+vim.keymap.set('n', '<leader>h', '<Plug>(MyPluginAction)')
+```
+
