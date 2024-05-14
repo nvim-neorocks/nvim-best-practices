@@ -4,6 +4,36 @@
 >
 > The code snippets in this document use the Neovim 0.10.0 API.
 
+## :safety_vest: Type safety
+
+Lua, as a dynamically typed language, is great for configuration.
+It provides virtually immediate feedback.
+
+### :x: DON'T
+
+...make your plugin susceptible to unexpected bugs at the wrong time.
+
+### :white_check_mark: DO
+
+...leverage [LuaCATS annotations](https://luals.github.io/wiki/annotations/),
+along with [lua-language-server](https://github.com/LuaLS/lua-language-server) to
+catch potential bugs in your CI before your plugin's users do.
+
+#### :hammer_and_wrench: Tools
+
+- [lua-typecheck-action](https://github.com/marketplace/actions/lua-typecheck-action)
+- [luacheck](https://github.com/mpeterv/luacheck) for additional linting.
+- [neodev.nvim](https://github.com/folke/neodev.nvim)
+
+For Nix users:
+
+- [nix-gen-luarc-json](https://github.com/mrcjkb/nix-gen-luarc-json),
+  which can be used to integrate with [git-hooks.nix](https://github.com/cachix/git-hooks.nix).
+
+#### :books: Further reading
+
+- [Algebraic data types in Lua (Almost)](https://mrcjkb.dev/posts/2023-08-17-lua-adts.html)
+
 ## :right_anger_bubble: User Commands
 
 ### :x: DON'T
@@ -22,7 +52,7 @@ command completion.
 
 ### :white_check_mark: DO
 
-Gather subcommands under scoped commands
+...gather subcommands under scoped commands
 and implement completions for each subcommand.
 
 #### Example
