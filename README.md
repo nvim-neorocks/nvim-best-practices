@@ -34,7 +34,7 @@ For Nix users:
 
 - [Algebraic data types in Lua (Almost)](https://mrcjkb.dev/posts/2023-08-17-lua-adts.html)
 
-## :speaking_head: User Commands
+## :right_anger_bubble: User Commands
 
 ### :x: DON'T
 
