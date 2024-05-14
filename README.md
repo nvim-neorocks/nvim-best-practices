@@ -339,3 +339,137 @@ end, {
 > The same applies to [autocommands](https://github.com/folke/lazy.nvim/blob/e44636a43376e8a1e851958f7e9cbe996751d59f/lua/lazy/core/handler/event.lua#L68)
 > [keymaps](https://github.com/folke/lazy.nvim/blob/e44636a43376e8a1e851958f7e9cbe996751d59f/lua/lazy/core/handler/keys.lua#L112),
 > etc.
+
+## :wrench: Configuration
+
+### :white_check_mark: DO
+
+...use [LuaCATS annotations](https://luals.github.io/wiki/annotations/)
+to make your API play nicely with lua-language-server, while
+providing type safety.
+
+One of the largest foot guns in Lua is `nil`.
+You should avoid it in your internal configuration.
+On the other hand, users don't want to have to set every possible field.
+It is convenient for them to provide a default configuration and merge it
+with an override table.
+
+This is a common practice:
+
+```lua
+---@class myplugin.Config
+---@field do_something_cool boolean
+---@field strategy "random" | "periodic"
+
+---@type myplugin.Config
+local default_config = {
+    do_something_cool = true,
+    strategy = "random",
+}
+
+-- could also be passed in via a function. But there's no real downside to using `vim.g` or `vim.b`.
+local user_config = ...
+local config = vim.tbl_deep_extend("force", default_config, user_config or {})
+return config
+```
+
+In this example, a user can override only individual configuration fields:
+
+```lua
+vim.g.my_plugin = {
+    strategy = "periodic"
+}
+```
+
+...leaving the unset fields as their default.
+However, if they have lua-language-server configured to pick up your plugin
+(for example, using [neodev.nvim](https://github.com/folke/neodev.nvim)),
+it will show them a warning like this:
+
+```lua
+vim.g.my_plugin = { -- ⚠ Missing required fields in type `myplugin.Config`: `do_something_cool`
+    strategy = "periodic"
+}
+```
+
+To mitigate this, you can split configuration *option* declarations
+and internal configuration *values*.
+
+This is how I like to do it:
+
+```lua
+-- config/meta.lua
+
+---@class myplugin.Config
+---@field do_something_cool? boolean (optional) Notice the `?`
+---@field strategy? "random" | "periodic" (optional)
+
+-- Side note: I prefer to use `vim.g` or `vim.b` tables.
+-- You can also use a lua function but there's no real downside to using `vim.g` or `vim.b`
+-- and it doesn't throw an error if your plugin is not installed.
+-- This annotation says that`vim.g.my_plugin` can either be a `myplugin.Config` table, or
+-- a function that returns one, or `nil` (union type).
+---@type myplugin.Config | fun():myplugin.Config | nil
+vim.g.my_plugin = vim.g.my_plugin
+
+--------------------------------------------------------------
+-- config/internal.lua
+
+---@class myplugin.InternalConfig
+local default_config = {
+    ---@type boolean
+    do_something_cool = true,
+    ---@type "random" | "periodic"
+    strategy = "random",
+}
+
+local user_config = type(vim.g.my_plugin) == "function" and vim.g.my_plugin() or vim.g.my_plugin or {}
+
+---@type myplugin.InternalConfig
+local config = -- ...merge configs
+```
+
+> [!IMPORTANT]
+>
+> This does have some downsides:
+>
+> - You have to maintain two configuration types.
+> - As this is fairly uncommon, first time contributors will often overlook one
+>   of the configuration types.
+>
+> Since this provides increased type safety for both the plugin
+> and the user's config, I believe it is well worth the slight inconvenience.
+
+### :white_check_mark: DO
+
+...validate configs.
+
+Once you have merged the default configuration with the user's config,
+you should validate configs.
+
+Validations could include:
+
+- Correct types, see `:h vim.validate`
+- Unknown fields in the user config (e.g. due to typos).
+  This can be tricky to implement, and may be better suited for
+  a health check, to reduce overhead.
+
+> [!WARNING]
+>
+> `vim.validate` will `error` if it fails a validation.
+
+Because of this, I like to wrap it with `pcall`:
+
+```lua
+---@param tbl table The table to validate
+---@see vim.validate
+---@return boolean is_valid
+---@return string|nil error_message
+local function safe_validate(tbl)
+  local ok, err = pcall(vim.validate, tbl)
+  return ok or false, ok and nil or err
+end
+```
+
+By doing this, you can use the validation with both 
+`:h vim.notify` and `:h vim.health`.
