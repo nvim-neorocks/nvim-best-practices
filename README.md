@@ -223,7 +223,7 @@ In the user's config:
 vim.keymap.set("n", "<leader>h", "<Plug>(MyPluginAction)")
 ```
 
-## :zzz: Initialization
+## :zap: Initialization
 
 <!-- TODO -->
 
