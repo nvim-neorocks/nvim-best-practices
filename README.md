@@ -210,7 +210,7 @@ This can easily lead to conflicts.
 - Even if your plugin is not installed or disabled,
   creating the keymap won't lead to an error.
 
-***Example:**
+**Example:**
 
 In your plugin:
 
