@@ -524,3 +524,29 @@ bug fixes, new features, and breaking changes.
 #### :hammer_and_wrench: Tools
 
 - [luarocks-tag-release](https://github.com/marketplace/actions/luarocks-tag-release)
+
+## :notebook: Documentation
+
+### :white_check_mark: DO
+
+...provide vimdoc, so that users can read your plugin's documentation in Neovim,
+by entering `:h {plugin}`.
+
+### :x: DON'T
+
+...simply dump generated references in your `doc` directory.
+
+#### :hammer_and_wrench: Tools
+
+- [panvimdoc](https://github.com/kdheepak/panvimdoc)
+- [lemmy-help](https://github.com/numToStr/lemmy-help)
+
+> [!IMPORTANT]
+>
+> `lemmy-help` is a nice tool, but it hasn't been maintained in years.
+> It is no longer fully compatible with LuaCATS, which has diverged
+> from EmmyLua.
+
+#### :books: Further reading
+
+- [Diátaxis - A systematic approach to technical documentation authoring](https://diataxis.fr/)
