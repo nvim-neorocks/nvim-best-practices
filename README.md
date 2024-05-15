@@ -233,7 +233,7 @@ vim.keymap.set("n", "<leader>h", "<Plug>(MyPluginAction)")
 
 ### :x: DON'T
 
-...force users to use a specific plugin manager or to call a `setup` function
+...force users to call a `setup` function
 in order to be able to use your plugin.
 
 > [!WARNING]
