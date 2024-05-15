@@ -377,7 +377,7 @@ return config
 In this example, a user can override only individual configuration fields:
 
 ```lua
-vim.g.my_plugin = {
+{
     strategy = "periodic"
 }
 ```
@@ -388,7 +388,7 @@ However, if they have lua-language-server configured to pick up your plugin
 it will show them a warning like this:
 
 ```lua
-vim.g.my_plugin = { -- ⚠ Missing required fields in type `myplugin.Config`: `do_something_cool`
+{ -- ⚠ Missing required fields in type `myplugin.Config`: `do_something_cool`
     strategy = "periodic"
 }
 ```
