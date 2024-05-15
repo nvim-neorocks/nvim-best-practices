@@ -490,3 +490,36 @@ Some things to validate:
 #### :books: Further reading
 
 - `:h vim.health`
+
+## :hash: Versioning and releases
+
+### :x: DON'T
+
+...use [0ver](https://0ver.org/) or omit versioning completely,
+e.g. because you believe doing so is a commitment to stability.
+
+> [!TIP]
+>
+> Doing this won't make people any happier about breaking changes.
+
+### :white_check_mark: DO
+
+...use [SemVer](https://semver.org/) to properly communicate
+bug fixes, new features, and breaking changes.
+
+#### :books: Further reading
+
+- [Just use Semantic Versioning](https://vhyrro.github.io/posts/versioning/).
+
+### :white_check_mark: DO
+
+...automate versioning and releases, and publish to luarocks.org.
+
+#### :books: Further reading
+
+- [rocks.nvim/Introduction](https://github.com/nvim-neorocks/rocks.nvim?tab=readme-ov-file#moon-introduction)
+- [Luarocks :purple_heart: Neovim](https://github.com/nvim-neorocks/sample-luarocks-plugin)
+
+#### :hammer_and_wrench: Tools
+
+- [luarocks-tag-release](https://github.com/marketplace/actions/luarocks-tag-release)
