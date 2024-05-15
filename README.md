@@ -4,6 +4,11 @@
 >
 > The code snippets in this document use the Neovim 0.10.0 API.
 
+> [!NOTE]
+>
+> For a guide to using Lua in Neovim,
+> please refer to [`:h lua-intro`](https://neovim.io/doc/user/lua.html).
+
 ## :safety_vest: Type safety
 
 Lua, as a dynamically typed language, is great for configuration.
