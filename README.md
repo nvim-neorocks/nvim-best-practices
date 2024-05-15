@@ -32,6 +32,7 @@ For Nix users:
 
 #### :books: Further reading
 
+- [LuaCATS documentation](https://luals.github.io/wiki/annotations/)
 - [Algebraic data types in Lua (Almost)](https://mrcjkb.dev/posts/2023-08-17-lua-adts.html)
 
 ## :speaking_head: User Commands
