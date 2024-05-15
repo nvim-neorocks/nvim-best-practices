@@ -337,7 +337,7 @@ end, {
 > a plugin manager [has to itself create a user command](https://github.com/folke/lazy.nvim/blob/e44636a43376e8a1e851958f7e9cbe996751d59f/lua/lazy/core/handler/cmd.lua#L16).
 > This works great for plugins that don't implement proper lazy loading,
 > but it just adds overhead for those that do.
-> The same applies to [autocommands](https://github.com/folke/lazy.nvim/blob/e44636a43376e8a1e851958f7e9cbe996751d59f/lua/lazy/core/handler/event.lua#L68)
+> The same applies to [autocommands](https://github.com/folke/lazy.nvim/blob/e44636a43376e8a1e851958f7e9cbe996751d59f/lua/lazy/core/handler/event.lua#L68),
 > [keymaps](https://github.com/folke/lazy.nvim/blob/e44636a43376e8a1e851958f7e9cbe996751d59f/lua/lazy/core/handler/keys.lua#L112),
 > etc.
 
