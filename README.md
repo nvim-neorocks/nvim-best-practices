@@ -473,3 +473,20 @@ end
 
 By doing this, you can use the validation with both 
 `:h vim.notify` and `:h vim.health`.
+
+## :stethoscope: Troubleshooting
+
+### :white_check_mark: DO
+
+...provide health checks in `lua/{plugin}/health.lua`.
+
+Some things to validate:
+
+- User configuration
+- Proper initialization
+- Presence of lua dependencies
+- Presence of external dependencies
+
+#### :books: Further reading
+
+- `:h vim.health`
