@@ -1,4 +1,4 @@
-# :white_check_mark: DOs and :x: DON'Ts for Neovim Lua plugin development
+# :white_check_mark: :x: :moon: DOs and DON'Ts for modern Neovim Lua plugin development
 
 > [!IMPORTANT]
 >
