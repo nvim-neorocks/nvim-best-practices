@@ -464,18 +464,38 @@ Validations could include:
 >
 > `vim.validate` will `error` if it fails a validation.
 
-Because of this, I like to wrap it with `pcall`:
+Because of this, I like to wrap it with `pcall`,
+and add the path to the field in the config
+table to the error message:
 
 ```lua
+---@param path string The path to the field being validated
 ---@param tbl table The table to validate
 ---@see vim.validate
 ---@return boolean is_valid
 ---@return string|nil error_message
-local function safe_validate(tbl)
+local function validate(path, tbl)
   local ok, err = pcall(vim.validate, tbl)
-  return ok or false, ok and nil or err
+  return ok or false, path .. "." .. err
 end
 ```
+
+The function can be called like this:
+
+```lua
+---@param cfg myplugin.InternalConfig
+---@return boolean is_valid
+---@return string|nil error_message
+function validate(cfg)
+    return validate("vim.g.my_plugin", {
+        do_something_cool = { cfg.do_something_cool, "boolean" },
+        strategy = { cfg.strategy, "string" },
+    })
+end
+```
+
+And invalid config will result in an error message like
+`"vim.g.my_plugin.strategy: Expected string, got number"`.
 
 By doing this, you can use the validation with both 
 `:h vim.notify` and `:h vim.health`.
