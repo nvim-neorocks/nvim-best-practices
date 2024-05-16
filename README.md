@@ -474,7 +474,7 @@ table to the error message:
 ---@see vim.validate
 ---@return boolean is_valid
 ---@return string|nil error_message
-local function validate(path, tbl)
+local function validate_path(path, tbl)
   local ok, err = pcall(vim.validate, tbl)
   return ok or false, path .. "." .. err
 end
@@ -487,7 +487,7 @@ The function can be called like this:
 ---@return boolean is_valid
 ---@return string|nil error_message
 function validate(cfg)
-    return validate("vim.g.my_plugin", {
+    return validate_path("vim.g.my_plugin", {
         do_something_cool = { cfg.do_something_cool, "boolean" },
         strategy = { cfg.strategy, "string" },
     })
