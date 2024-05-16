@@ -229,6 +229,11 @@ In the user's config:
 vim.keymap.set("n", "<leader>h", "<Plug>(MyPluginAction)")
 ```
 
+> [!NOTE]
+>
+> If you don't care about users who prefer vimscript for configuration,
+> you can also just expose a lua API.
+
 ## :zap: Initialization
 
 ### :x: DON'T
