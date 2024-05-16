@@ -577,3 +577,44 @@ by entering `:h {plugin}`.
 #### :books: Further reading
 
 - [Diátaxis - A systematic approach to technical documentation authoring](https://diataxis.fr/)
+
+## :test_tube: Testing
+
+### :white_check_mark: DO
+
+...automate testing as much as you can.
+
+### :x: DON'T
+
+...use plenary.nvim for testing.
+
+Historically, `plenary.test` has been very popular for testing,
+because there was no convenient way for using Neovim as a lua interpreter.
+That has changed with the introduction of `nvim -l` in Neovim 0.9.
+
+While plenary.nvim is still being maintained, much of its functionality
+is [gradually being upstreamed into Neovim or moved into other libraries](https://github.com/nvim-telescope/telescope.nvim/issues/2552).
+
+### :white_check_mark: DO
+
+...use [busted](https://github.com/lunarmodules/busted) for testing,
+which is a lot more powerful. 
+
+> [!NOTE]
+> 
+> plenary.nvim bundles a *limited subset* of luassert.
+
+#### :books: Further reading
+
+- [Using Neovim as Lua interpreter with Luarocks](https://zignar.net/2023/01/21/using-luarocks-as-lua-interpreter-with-luarocks/)
+- [Testing Neovim plugins with Busted](https://hiphish.github.io/blog/2024/01/29/testing-neovim-plugins-with-busted/)
+- [Test your Neovim plugins with luarocks & busted](https://mrcjkb.dev/posts/2023-06-06-luarocks-test.html)
+- [Debugging Lua in Neovim](https://zignar.net/2023/06/10/debugging-lua-in-neovim/)
+
+#### :hammer_and_wrench: Tools
+
+- [`nlua`](https://github.com/mfussenegger/nlua)
+- [`neorocksTest`](https://github.com/nvim-neorocks/neorocks) (for Nix users)
+- [Neotest](https://github.com/nvim-neotest/neotest) adapters:
+  - [`HiPhish/neotest-busted`](https://gitlab.com/HiPhish/neotest-busted)
+  - [`MisanthropicBit/neotest-busted`](https://github.com/MisanthropicBit/neotest-busted)
