@@ -410,7 +410,7 @@ This is how I like to do it:
 ---@field do_something_cool? boolean (optional) Notice the `?`
 ---@field strategy? "random" | "periodic" (optional)
 
--- Side note: I prefer to use `vim.g` or `vim.b` tables.
+-- Side note: I prefer to use `vim.g` or `vim.b` tables (:h lua-vim-variables).
 -- You can also use a lua function but there's no real downside to using `vim.g` or `vim.b`
 -- and it doesn't throw an error if your plugin is not installed.
 -- This annotation says that`vim.g.my_plugin` can either be a `myplugin.Config` table, or
