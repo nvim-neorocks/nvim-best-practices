@@ -495,7 +495,7 @@ end
 ```
 
 And invalid config will result in an error message like
-`"vim.g.my_plugin.strategy: Expected string, got number"`.
+`"vim.g.my_plugin.strategy: expected string, got number"`.
 
 By doing this, you can use the validation with both 
 `:h vim.notify` and `:h vim.health`.
