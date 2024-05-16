@@ -549,6 +549,8 @@ bug fixes, new features, and breaking changes.
 #### :hammer_and_wrench: Tools
 
 - [luarocks-tag-release](https://github.com/marketplace/actions/luarocks-tag-release)
+- [release-please-action](https://github.com/googleapis/release-please-action)
+- [semantic-release](https://github.com/semantic-release/semantic-release)
 
 ## :notebook: Documentation
 
