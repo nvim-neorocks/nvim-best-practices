@@ -148,7 +148,7 @@ local function my_cmd(opts)
     local args = #fargs > 1 and vim.list_slice(fargs, 2, #fargs) or {}
     local subcommand = subcommand_tbl[subcommand_key]
     if not subcommand then
-        vim.notify("Rocks: Unknown command: " .. cmd, vim.log.levels.ERROR)
+        vim.notify("Rocks: Unknown command: " .. subcommand, vim.log.levels.ERROR)
         return
     end
     -- Invoke the subcommand
