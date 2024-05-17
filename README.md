@@ -233,6 +233,11 @@ In the user's config:
 vim.keymap.set("n", "<leader>h", "<Plug>(MyPluginAction)")
 ```
 
+> [!TIP]
+>
+> A benefit of `<Plug>` mappings over exposing a lua function
+> is that you can enforce options like `expr = true`.
+
 ### :white_check_mark: DO
 
 ...just expose a Lua API that people can use to define keymaps, if
