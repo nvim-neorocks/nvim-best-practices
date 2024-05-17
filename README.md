@@ -203,6 +203,10 @@ This can easily lead to conflicts.
 - You will have to implement and document it yourself.
 - What if someone else comes up with a slightly different DSL?
   This will lead to inconsistencies and confusion.
+  Here are 3 differing implementations:
+    - [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim/tree/96610122a40f0bb4ce2e452c6d2429bf093d6700?tab=readme-ov-file#telescope-setup-structure)
+    - [nvim-treesitter-textobjects (legacy)](https://github.com/nvim-treesitter/nvim-treesitter-textobjects/tree/84cc9ed772f1fee2f47c1e076f518829583d8347?tab=readme-ov-file#text-objects-select)
+    - [nvim-treesitter-refactor (legacy)](https://github.com/nvim-treesitter/nvim-treesitter-refactor/tree/65ad2eca822dfaec2a3603119ec3cc8826a7859e?tab=readme-ov-file#smart-rename)
 - If a user has to call a `setup` function to set keymaps,
   it will cause an error if your plugin is not installed or disabled.
 - Neovim already has a built-in API for this.
@@ -229,14 +233,16 @@ In the user's config:
 vim.keymap.set("n", "<leader>h", "<Plug>(MyPluginAction)")
 ```
 
-> [!NOTE]
->
-> Just expose a Lua API, if
->
-> - you have a function that takes a large options table,
->   and it would require lots of `<Plug>` mappings to expose all of its uses
->   (You could still create some for the most common uses).
-> - you don't care about people who prefer Vimscript for configuration
+### :white_check_mark: DO
+
+...just expose a Lua API that people can use to define keymaps, if
+
+- You have a function that takes a large options table,
+  and it would require lots of `<Plug>` mappings to expose all of its uses
+  (You could still create some for the most common ones).
+- You don't care about people who prefer Vimscript for configuration.
+
+Another alternative is just to expose user commands.
 
 ## :zap: Initialization
 
