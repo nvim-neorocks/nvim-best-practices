@@ -231,8 +231,12 @@ vim.keymap.set("n", "<leader>h", "<Plug>(MyPluginAction)")
 
 > [!NOTE]
 >
-> If you don't care about users who prefer vimscript for configuration,
-> you can also just expose a lua API.
+> Just expose a Lua API, if
+>
+> - you have a function that takes a large options table,
+>   and it would require lots of `<Plug>` mappings to expose all of its uses
+>   (You could still create some for the most common uses).
+> - you don't care about people who prefer Vimscript for configuration
 
 ## :zap: Initialization
 
