@@ -235,8 +235,30 @@ vim.keymap.set("n", "<leader>h", "<Plug>(MyPluginAction)")
 
 > [!TIP]
 >
-> A benefit of `<Plug>` mappings over exposing a lua function
-> is that you can enforce options like `expr = true`.
+> Some benefits of `<Plug>` mappings over exposing a lua function:
+> 
+> - You can enforce options like `expr = true`.
+> - Expose functionality only or specific modes (`:h map-modes`).
+> - Expose different behaviour for different modes with
+>   a single `<Plug>` mapping.
+
+For example, in your plugin:
+
+```lua
+vim.keymap.set("n", "<Plug>(SayHello)", function() 
+    print("Hello from normal mode") 
+end, { noremap = true })
+
+vim.keymap.set("v", "<Plug>(SayHello)", function() 
+    print("Hello from visual mode") 
+end, { noremap = true })
+```
+
+In the user's config:
+
+```lua
+vim.keymap.set({"n", "v"}, "<leader>h", "<Plug>(SayHello)")
+```
 
 ### :white_check_mark: DO
 
