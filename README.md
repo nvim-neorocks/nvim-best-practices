@@ -327,10 +327,10 @@ for initialization could be useful:
 
 ```lua
 -- ftplugin/rust.lua
-if not _G.did_my_rust_plugin_init then
+if not vim.g.did_my_rust_plugin_init then
     -- Initialise
 end
-_G.did_my_rust_plugin_init = true
+vim.g.did_my_rust_plugin_init = true
 
 local bufnr = vim.api.nvim_get_current_buf()
 -- do something specific to this buffer, e.g. add a <Plug> mapping or create a command
