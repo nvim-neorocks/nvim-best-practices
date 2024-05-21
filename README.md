@@ -327,10 +327,12 @@ for initialization could be useful:
 
 ```lua
 -- ftplugin/rust.lua
-if not vim.g.did_my_rust_plugin_init then
+if not vim.g.loaded_my_rust_plugin then
     -- Initialise
 end
-vim.g.did_my_rust_plugin_init = true
+-- NOTE: Using vim.g.loaded_ prevents the plugin from initializing twice
+-- and allows users to prevent plugins from loading (in both Lua and Vimscript).
+vim.g.loaded_my_rust_plugin = true
 
 local bufnr = vim.api.nvim_get_current_buf()
 -- do something specific to this buffer, e.g. add a <Plug> mapping or create a command
