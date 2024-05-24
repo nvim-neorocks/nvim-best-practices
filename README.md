@@ -662,3 +662,18 @@ which is a lot more powerful.
 - [Neotest](https://github.com/nvim-neotest/neotest) adapters:
   - [`HiPhish/neotest-busted`](https://gitlab.com/HiPhish/neotest-busted)
   - [`MisanthropicBit/neotest-busted`](https://github.com/MisanthropicBit/neotest-busted)
+
+## :electric_plug: Integrating with other plugins
+
+### :white_check_mark: DO
+
+...consider integrating with other plugins.
+
+For example, it might be useful to add
+a [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) extension
+or a [lualine](https://github.com/nvim-lualine/lualine.nvim) component.
+
+> [!TIP]
+>
+> If you don't want to commit to maintaining compatibility with another plugin's API,
+> you can expose your own API for others to hook into.
