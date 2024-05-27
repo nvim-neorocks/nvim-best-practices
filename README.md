@@ -322,7 +322,7 @@ for initialization could be useful:
 **Is there any functionality that is specific to a filetype?**
 
 - Put your initialization logic in a `ftplugin/{filetype}.lua` script.
-- See `:h filetype`.
+- See [`:h filetype`](https://neovim.io/doc/user/filetype.html#%3Afiletype).
 
 **Example:**
 
@@ -543,7 +543,7 @@ And invalid config will result in an error message like
 `"vim.g.my_plugin.strategy: expected string, got number"`.
 
 By doing this, you can use the validation with both 
-`:h vim.notify` and `:h vim.health`.
+[`:h vim.notify`](https://neovim.io/doc/user/lua.html#vim.notify()) and [`:h vim.health`](https://neovim.io/doc/user/pi_health.html#health-functions).
 
 ## :stethoscope: Troubleshooting
 
@@ -560,7 +560,7 @@ Some things to validate:
 
 #### :books: Further reading
 
-- `:h vim.health`
+- [`:h vim.health`](https://neovim.io/doc/user/pi_health.html#health-functions)
 
 ## :hash: Versioning and releases
 
