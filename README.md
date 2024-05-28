@@ -525,7 +525,7 @@ table to the error message:
 ---@return string|nil error_message
 local function validate_path(path, tbl)
   local ok, err = pcall(vim.validate, tbl)
-  return ok or false, path .. "." .. err
+  return ok, err and path .. "." .. err
 end
 ```
 
