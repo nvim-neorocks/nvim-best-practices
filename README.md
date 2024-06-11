@@ -655,6 +655,7 @@ which is a lot more powerful.
 
 #### :books: Further reading
 
+- [`nvim-lua/nvim-lua-plugin-template`](https://github.com/nvim-lua/nvim-lua-plugin-template/)
 - [Using Neovim as Lua interpreter with Luarocks](https://zignar.net/2023/01/21/using-luarocks-as-lua-interpreter-with-luarocks/)
 - [Testing Neovim plugins with Busted](https://hiphish.github.io/blog/2024/01/29/testing-neovim-plugins-with-busted/)
 - [Test your Neovim plugins with luarocks & busted](https://mrcjkb.dev/posts/2023-06-06-luarocks-test.html)
@@ -662,6 +663,7 @@ which is a lot more powerful.
 
 #### :hammer_and_wrench: Tools
 
+- [`nvim-busted-action`](https://github.com/marketplace/actions/nvim-busted-action)
 - [`nlua`](https://github.com/mfussenegger/nlua)
 - [`neorocksTest`](https://github.com/nvim-neorocks/neorocks) (for Nix users)
 - [Neotest](https://github.com/nvim-neotest/neotest) adapters:
