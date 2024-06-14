@@ -166,7 +166,7 @@ vim.api.nvim_create_user_command("Rocks", my_cmd, {
     desc = "My awesome command with subcommand completions",
     complete = function(arg_lead, cmdline, _)
         -- Get the subcommand.
-        local subcmd_key, subcmd_arg_lead = cmdline:match("^Rocks[!]*%s(%S+)%s(.*)$")
+        local subcmd_key, subcmd_arg_lead = cmdline:match("^['<,'>]*Rocks[!]*%s(%S+)%s(.*)$")
         if subcmd_key 
             and subcmd_arg_lead 
             and subcommand_tbl[subcmd_key] 
@@ -176,7 +176,7 @@ vim.api.nvim_create_user_command("Rocks", my_cmd, {
             return subcommand_tbl[subcmd_key].complete(subcmd_arg_lead)
         end
         -- Check if cmdline is a subcommand
-        if cmdline:match("^Rocks[!]*%s+%w*$") then
+        if cmdline:match("^['<,'>]*Rocks[!]*%s+%w*$") then
             -- Filter subcommands that match
             local subcommand_keys = vim.tbl_keys(subcommand_tbl)
             return vim.iter(subcommand_keys)
