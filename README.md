@@ -29,7 +29,7 @@ catch potential bugs in your CI before your plugin's users do.
 - [lua-typecheck-action](https://github.com/marketplace/actions/lua-typecheck-action)
 - [llscheck](https://github.com/jeffzi/llscheck)
 - [luacheck](https://github.com/mpeterv/luacheck) for additional linting.
-- [neodev.nvim](https://github.com/folke/neodev.nvim)
+- [lazydev.nvim](https://github.com/folke/lazydev.nvim)
 
 For Nix users:
 
