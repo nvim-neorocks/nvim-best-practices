@@ -653,9 +653,12 @@ which is a lot more powerful.
 > 
 > plenary.nvim bundles a *limited subset* of luassert.
 
-#### :books: Further reading
+#### :page_facing_up: Template
 
 - [`nvim-lua/nvim-lua-plugin-template`](https://github.com/nvim-lua/nvim-lua-plugin-template/)
+
+#### :books: Further reading
+
 - [Using Neovim as Lua interpreter with Luarocks](https://zignar.net/2023/01/21/using-luarocks-as-lua-interpreter-with-luarocks/)
 - [Testing Neovim plugins with Busted](https://hiphish.github.io/blog/2024/01/29/testing-neovim-plugins-with-busted/)
 - [Test your Neovim plugins with luarocks & busted](https://mrcjkb.dev/posts/2023-06-06-luarocks-test.html)
