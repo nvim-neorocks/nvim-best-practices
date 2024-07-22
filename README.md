@@ -323,7 +323,7 @@ for initialization could be useful:
 
 ...think carefully about when which parts of your plugin need to be loaded.
 
-**Is there any functionality that is specific to a filetype?**
+#### Is there any functionality that is specific to a filetype?
 
 - Put your initialization logic in a `ftplugin/{filetype}.lua` script.
 - See [`:h filetype`](https://neovim.io/doc/user/filetype.html#%3Afiletype).
@@ -346,8 +346,7 @@ vim.keymap.set("n", "<Plug>(MyPluginBufferAction)", function()
 end, { noremap = true, buffer = bufnr, })
 ```
 
-**Is your plugin *not* filetype-specific, but it likely
-won't be needed every single time a user opens a Neovim session?**
+#### Is your plugin *not* filetype-specific, but it likely won't be needed every single time a user opens a Neovim session?
 
 Don't eagerly `require` your lua modules.
 
