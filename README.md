@@ -1,4 +1,6 @@
-# :white_check_mark: :x: :moon: DOs and DON'Ts for modern Neovim Lua plugin development
+## Modern Neovim Lua Plugin Development Guide
+
+> :white_check_mark: :x: :moon: DOs and DON'Ts
 
 > [!IMPORTANT]
 >
@@ -9,22 +11,52 @@
 > For a guide to using Lua in Neovim,
 > please refer to [`:h lua-intro`](https://neovim.io/doc/user/lua.html).
 
-## :safety_vest: Type safety
+<!-- vim-markdown-toc GFM -->
+
+- [:safety_vest: Type safety](#safety_vest-type-safety)
+    - [:hammer_and_wrench: Tools](#hammer_and_wrench-tools)
+    - [:books: Further reading](#books-further-reading)
+- [:speaking_head: User Commands](#speaking_head-user-commands)
+    - [:books: Further reading](#books-further-reading-1)
+- [:keyboard: Keymaps](#keyboard-keymaps)
+- [:zap: Initialization](#zap-initialization)
+- [:sleeping_bed: Lazy loading](#sleeping_bed-lazy-loading)
+    - [Is there any functionality that is specific to a filetype?](#is-there-any-functionality-that-is-specific-to-a-filetype)
+    - [Use lazy require for none-ftplugin](#use-lazy-require-for-none-ftplugin)
+- [:wrench: Configuration](#wrench-configuration)
+- [:stethoscope: Troubleshooting](#stethoscope-troubleshooting)
+    - [:books: Further reading](#books-further-reading-2)
+- [:hash: Versioning and releases](#hash-versioning-and-releases)
+    - [:books: Further reading](#books-further-reading-3)
+    - [:books: Further reading](#books-further-reading-4)
+    - [:hammer_and_wrench: Tools](#hammer_and_wrench-tools-1)
+- [:notebook: Documentation](#notebook-documentation)
+    - [:hammer_and_wrench: Tools](#hammer_and_wrench-tools-2)
+    - [:books: Further reading](#books-further-reading-5)
+- [:test_tube: Testing](#test_tube-testing)
+    - [:page_facing_up: Template](#page_facing_up-template)
+    - [:books: Further reading](#books-further-reading-6)
+    - [:hammer_and_wrench: Tools](#hammer_and_wrench-tools-3)
+- [:electric_plug: Integrating with other plugins](#electric_plug-integrating-with-other-plugins)
+
+<!-- vim-markdown-toc -->
+
+### :safety_vest: Type safety
 
 Lua, as a dynamically typed language, is great for configuration.
 It provides virtually immediate feedback.
 
-### :x: DON'T
+**:x: DON'T**
 
-...make your plugin susceptible to unexpected bugs at the wrong time.
+Make your plugin susceptible to unexpected bugs at the wrong time.
 
-### :white_check_mark: DO
+**:white_check_mark: DO**
 
-...leverage [LuaCATS annotations](https://luals.github.io/wiki/annotations/),
+Leverage [LuaCATS annotations](https://luals.github.io/wiki/annotations/),
 along with [lua-language-server](https://github.com/LuaLS/lua-language-server) to
 catch potential bugs in your CI before your plugin's users do.
 
-#### :hammer_and_wrench: Tools
+##### :hammer_and_wrench: Tools
 
 - [lua-typecheck-action](https://github.com/marketplace/actions/lua-typecheck-action)
 - [llscheck](https://github.com/jeffzi/llscheck)
@@ -36,16 +68,16 @@ For Nix users:
 - [nix-gen-luarc-json](https://github.com/mrcjkb/nix-gen-luarc-json),
   which can be used to integrate with [git-hooks.nix](https://github.com/cachix/git-hooks.nix).
 
-#### :books: Further reading
+##### :books: Further reading
 
 - [LuaCATS documentation](https://luals.github.io/wiki/annotations/)
 - [Algebraic data types in Lua (Almost)](https://mrcjkb.dev/posts/2023-08-17-lua-adts.html)
 
-## :speaking_head: User Commands
+### :speaking_head: User Commands
 
-### :x: DON'T
+**:x: DON'T**
 
-...pollute the command namespace with a command for each action.
+Pollute the command namespace with a command for each action.
 
 **Example:**
 
@@ -57,9 +89,9 @@ For Nix users:
 This can quickly become overwhelming when users rely on
 command completion.
 
-### :white_check_mark: DO
+**:white_check_mark: DO**
 
-...gather subcommands under scoped commands
+Gather subcommands under scoped commands
 and implement completions for each subcommand.
 
 **Example:**
@@ -74,21 +106,22 @@ and implement completions for each subcommand.
     <b>Screenshots</b>
   </summary>
 
-  Subcommand completions:
+Subcommand completions:
 
-  ![](https://github.com/mrcjkb/nvim-best-practices/assets/12857160/33bf7825-b08b-427b-aa55-c51b8b10a361)
+![](https://github.com/mrcjkb/nvim-best-practices/assets/12857160/33bf7825-b08b-427b-aa55-c51b8b10a361)
 
-  Argument completions:
+Argument completions:
 
-  ![](https://github.com/mrcjkb/nvim-best-practices/assets/12857160/e8c8de05-f2aa-477b-82e5-f983775d5fd3)
+![](https://github.com/mrcjkb/nvim-best-practices/assets/12857160/e8c8de05-f2aa-477b-82e5-f983775d5fd3)
+
 </details>
 
 Here's an example of how to implement completions.
-In this example, we want to 
+In this example, we want to
 
-- provide *subcommand completions* if the user has typed 
+- provide _subcommand completions_ if the user has typed
   `:Rocks ...`
-- *argument completions* if they have typed `:Rocks {subcommand} ...`
+- _argument completions_ if they have typed `:Rocks {subcommand} ...`
 
 First, define a type for each subcommand, which has:
 
@@ -167,9 +200,9 @@ vim.api.nvim_create_user_command("Rocks", my_cmd, {
     complete = function(arg_lead, cmdline, _)
         -- Get the subcommand.
         local subcmd_key, subcmd_arg_lead = cmdline:match("^['<,'>]*Rocks[!]*%s(%S+)%s(.*)$")
-        if subcmd_key 
-            and subcmd_arg_lead 
-            and subcommand_tbl[subcmd_key] 
+        if subcmd_key
+            and subcmd_arg_lead
+            and subcommand_tbl[subcmd_key]
             and subcommand_tbl[subcmd_key].complete
         then
             -- The subcommand has completions. Return them.
@@ -190,35 +223,35 @@ vim.api.nvim_create_user_command("Rocks", my_cmd, {
 })
 ```
 
-#### :books: Further reading
+##### :books: Further reading
 
 - `:h lua-guide-commands-create`
 
-## :keyboard: Keymaps
+### :keyboard: Keymaps
 
-### :x: DON'T
+**:x: DON'T**
 
-...create any keymaps automatically (unless they are not controversial).
+Create any keymaps automatically (unless they are not controversial).
 This can easily lead to conflicts.
 
-### :x: DON'T
+**:x: DON'T**
 
-...define a fancy DSL for enabling keymaps via a `setup` function.
+Define a fancy DSL for enabling keymaps via a `setup` function.
 
 - You will have to implement and document it yourself.
 - What if someone else comes up with a slightly different DSL?
   This will lead to inconsistencies and confusion.
   Here are 3 differing implementations:
-    - [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim/tree/96610122a40f0bb4ce2e452c6d2429bf093d6700?tab=readme-ov-file#telescope-setup-structure)
-    - [nvim-treesitter-textobjects (legacy)](https://github.com/nvim-treesitter/nvim-treesitter-textobjects/tree/84cc9ed772f1fee2f47c1e076f518829583d8347?tab=readme-ov-file#text-objects-select)
-    - [nvim-treesitter-refactor (legacy)](https://github.com/nvim-treesitter/nvim-treesitter-refactor/tree/65ad2eca822dfaec2a3603119ec3cc8826a7859e?tab=readme-ov-file#smart-rename)
+  - [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim/tree/96610122a40f0bb4ce2e452c6d2429bf093d6700?tab=readme-ov-file#telescope-setup-structure)
+  - [nvim-treesitter-textobjects (legacy)](https://github.com/nvim-treesitter/nvim-treesitter-textobjects/tree/84cc9ed772f1fee2f47c1e076f518829583d8347?tab=readme-ov-file#text-objects-select)
+  - [nvim-treesitter-refactor (legacy)](https://github.com/nvim-treesitter/nvim-treesitter-refactor/tree/65ad2eca822dfaec2a3603119ec3cc8826a7859e?tab=readme-ov-file#smart-rename)
 - If a user has to call a `setup` function to set keymaps,
   it will cause an error if your plugin is not installed or disabled.
 - Neovim already has a built-in API for this.
 
-### :white_check_mark: DO
+**:white_check_mark: DO**
 
-...provide `:h <Plug>` mappings to allow users to define their own keymaps.
+Provide `:h <Plug>` mappings to allow users to define their own keymaps.
 
 - It requires one line of code in user configs.
 - Even if your plugin is not installed or disabled,
@@ -241,7 +274,7 @@ vim.keymap.set("n", "<leader>h", "<Plug>(MyPluginAction)")
 > [!TIP]
 >
 > Some benefits of `<Plug>` mappings over exposing a lua function:
-> 
+>
 > - You can enforce options like `expr = true`.
 > - Expose functionality only or specific modes (`:h map-modes`).
 > - Expose different behaviour for different modes with
@@ -250,12 +283,12 @@ vim.keymap.set("n", "<leader>h", "<Plug>(MyPluginAction)")
 For example, in your plugin:
 
 ```lua
-vim.keymap.set("n", "<Plug>(SayHello)", function() 
-    print("Hello from normal mode") 
+vim.keymap.set("n", "<Plug>(SayHello)", function()
+    print("Hello from normal mode")
 end, { noremap = true })
 
-vim.keymap.set("v", "<Plug>(SayHello)", function() 
-    print("Hello from visual mode") 
+vim.keymap.set("v", "<Plug>(SayHello)", function()
+    print("Hello from visual mode")
 end, { noremap = true })
 ```
 
@@ -265,9 +298,9 @@ In the user's config:
 vim.keymap.set({"n", "v"}, "<leader>h", "<Plug>(SayHello)")
 ```
 
-### :white_check_mark: DO
+**:white_check_mark: DO**
 
-...just expose a Lua API that people can use to define keymaps, if
+Just expose a Lua API that people can use to define keymaps, if
 
 - You have a function that takes a large options table,
   and it would require lots of `<Plug>` mappings to expose all of its uses
@@ -276,39 +309,39 @@ vim.keymap.set({"n", "v"}, "<leader>h", "<Plug>(SayHello)")
 
 Another alternative is just to expose user commands.
 
-## :zap: Initialization
+### :zap: Initialization
 
-### :x: DON'T
+**:x: DON'T**
 
-...force users to call a `setup` function
+Force users to call a `setup` function
 in order to be able to use your plugin.
 
 > [!WARNING]
 >
 > This one often sparks heated debates.
-> I have written in detail about the various reasons 
+> I have written in detail about the various reasons
 > why this is an anti pattern [here](https://mrcjkb.dev/posts/2023-08-22-setup.html).
 >
 > - If you still disagree, feel free to open an issue.
 
-These are the rare cases in which a `setup` function 
+These are the rare cases in which a `setup` function
 for initialization could be useful:
 
 - You want your plugin to be compatible with Neovim <= 0.6.
-- *And* your plugin is actually multiple plugins in a monorepo.
-- *Or* you're integrating with another plugin that *forces* you to do so.
+- _And_ your plugin is actually multiple plugins in a monorepo.
+- _Or_ you're integrating with another plugin that _forces_ you to do so.
 
-### :white_check_mark: DO
+**:white_check_mark: DO**
 
 - Cleanly separate configuration and initialization.
-- Automatically initialize your plugin *(smartly)*,
+- Automatically initialize your plugin _(smartly)_,
   with minimal impact on startup time (see the next section).
 
-## :sleeping_bed: Lazy loading
+### :sleeping_bed: Lazy loading
 
-### :x: DON'T
+**:x: DON'T**
 
-...rely on plugin managers to take care of lazy loading for you.
+Rely on plugin managers to take care of lazy loading for you.
 
 - Making sure a plugin doesn't unnecessarily impact startup time
   should be the responsibility of plugin authors, not users.
@@ -319,11 +352,11 @@ for initialization could be useful:
   will likely have less overhead than the mechanisms used by a
   plugin manager or user to load that plugin lazily.
 
-### :white_check_mark: DO
+**:white_check_mark: DO**
 
-...think carefully about when which parts of your plugin need to be loaded.
+Think carefully about when which parts of your plugin need to be loaded.
 
-#### Is there any functionality that is specific to a filetype?
+##### Is there any functionality that is specific to a filetype?
 
 - Put your initialization logic in a `ftplugin/{filetype}.lua` script.
 - See [`:h filetype`](https://neovim.io/doc/user/filetype.html#%3Afiletype).
@@ -341,12 +374,12 @@ vim.g.loaded_my_rust_plugin = true
 
 local bufnr = vim.api.nvim_get_current_buf()
 -- do something specific to this buffer, e.g. add a <Plug> mapping or create a command
-vim.keymap.set("n", "<Plug>(MyPluginBufferAction)", function() 
+vim.keymap.set("n", "<Plug>(MyPluginBufferAction)", function()
     print("Hello")
 end, { noremap = true, buffer = bufnr, })
 ```
 
-#### Is your plugin *not* filetype-specific, but it likely won't be needed every single time a user opens a Neovim session?
+##### Use lazy require for none-ftplugin
 
 Don't eagerly `require` your lua modules.
 
@@ -363,7 +396,7 @@ end, {
 })
 ```
 
-...which will eagerly load the `foo` module,
+Which will eagerly load the `foo` module,
 and any modules it eagerly imports, you can lazy load it
 by moving the `require` into the command's implementation.
 
@@ -394,11 +427,11 @@ end, {
 > [keymaps](https://github.com/folke/lazy.nvim/blob/e44636a43376e8a1e851958f7e9cbe996751d59f/lua/lazy/core/handler/keys.lua#L112),
 > etc.
 
-## :wrench: Configuration
+### :wrench: Configuration
 
-### :white_check_mark: DO
+**:white_check_mark: DO**
 
-...use [LuaCATS annotations](https://luals.github.io/wiki/annotations/)
+Use [LuaCATS annotations](https://luals.github.io/wiki/annotations/)
 to make your API play nicely with lua-language-server, while
 providing type safety.
 
@@ -435,7 +468,7 @@ In this example, a user can override only individual configuration fields:
 }
 ```
 
-...leaving the unset fields as their default.
+Leaving the unset fields as their default.
 However, if they have lua-language-server configured to pick up your plugin
 (for example, using [neodev.nvim](https://github.com/folke/neodev.nvim)),
 it will show them a warning like this:
@@ -446,8 +479,8 @@ it will show them a warning like this:
 }
 ```
 
-To mitigate this, you can split configuration *option* declarations
-and internal configuration *values*.
+To mitigate this, you can split configuration _option_ declarations
+and internal configuration _values_.
 
 This is how I like to do it:
 
@@ -494,9 +527,9 @@ local config = -- ...merge configs
 > Since this provides increased type safety for both the plugin
 > and the user's config, I believe it is well worth the slight inconvenience.
 
-### :white_check_mark: DO
+**:white_check_mark: DO**
 
-...validate configs.
+Validate configs.
 
 Once you have merged the default configuration with the user's config,
 you should validate configs.
@@ -545,14 +578,14 @@ end
 And invalid config will result in an error message like
 `"vim.g.my_plugin.strategy: expected string, got number"`.
 
-By doing this, you can use the validation with both 
-[`:h vim.notify`](https://neovim.io/doc/user/lua.html#vim.notify()) and [`:h vim.health`](https://neovim.io/doc/user/pi_health.html#health-functions).
+By doing this, you can use the validation with both
+[`:h vim.notify`](<https://neovim.io/doc/user/lua.html#vim.notify()>) and [`:h vim.health`](https://neovim.io/doc/user/pi_health.html#health-functions).
 
-## :stethoscope: Troubleshooting
+### :stethoscope: Troubleshooting
 
-### :white_check_mark: DO
+**:white_check_mark: DO**
 
-...provide health checks in `lua/{plugin}/health.lua`.
+Provide health checks in `lua/{plugin}/health.lua`.
 
 Some things to validate:
 
@@ -561,57 +594,57 @@ Some things to validate:
 - Presence of lua dependencies
 - Presence of external dependencies
 
-#### :books: Further reading
+##### :books: Further reading
 
 - [`:h vim.health`](https://neovim.io/doc/user/pi_health.html#health-functions)
 
-## :hash: Versioning and releases
+### :hash: Versioning and releases
 
-### :x: DON'T
+**:x: DON'T**
 
-...use [0ver](https://0ver.org/) or omit versioning completely,
+Use [0ver](https://0ver.org/) or omit versioning completely,
 e.g. because you believe doing so is a commitment to stability.
 
 > [!TIP]
 >
 > Doing this won't make people any happier about breaking changes.
 
-### :white_check_mark: DO
+**:white_check_mark: DO**
 
-...use [SemVer](https://semver.org/) to properly communicate
+Use [SemVer](https://semver.org/) to properly communicate
 bug fixes, new features, and breaking changes.
 
-#### :books: Further reading
+##### :books: Further reading
 
 - [Just use Semantic Versioning](https://vhyrro.github.io/posts/versioning/).
 
-### :white_check_mark: DO
+**:white_check_mark: DO**
 
-...automate versioning and releases, and publish to luarocks.org.
+Automate versioning and releases, and publish to luarocks.org.
 
-#### :books: Further reading
+##### :books: Further reading
 
 - [rocks.nvim/Introduction](https://github.com/nvim-neorocks/rocks.nvim?tab=readme-ov-file#moon-introduction)
 - [Luarocks :purple_heart: Neovim](https://github.com/nvim-neorocks/sample-luarocks-plugin)
 
-#### :hammer_and_wrench: Tools
+##### :hammer_and_wrench: Tools
 
 - [luarocks-tag-release](https://github.com/marketplace/actions/luarocks-tag-release)
 - [release-please-action](https://github.com/googleapis/release-please-action)
 - [semantic-release](https://github.com/semantic-release/semantic-release)
 
-## :notebook: Documentation
+### :notebook: Documentation
 
-### :white_check_mark: DO
+**:white_check_mark: DO**
 
-...provide vimdoc, so that users can read your plugin's documentation in Neovim,
+provide vimdoc, so that users can read your plugin's documentation in Neovim,
 by entering `:h {plugin}`.
 
-### :x: DON'T
+**:x: DON'T**
 
-...simply dump generated references in your `doc` directory.
+simply dump generated references in your `doc` directory.
 
-#### :hammer_and_wrench: Tools
+##### :hammer_and_wrench: Tools
 
 - [panvimdoc](https://github.com/kdheepak/panvimdoc)
 - [lemmy-help](https://github.com/numToStr/lemmy-help)
@@ -622,19 +655,19 @@ by entering `:h {plugin}`.
 > It is no longer fully compatible with LuaCATS, which has diverged
 > from EmmyLua.
 
-#### :books: Further reading
+##### :books: Further reading
 
 - [Diátaxis - A systematic approach to technical documentation authoring](https://diataxis.fr/)
 
-## :test_tube: Testing
+### :test_tube: Testing
 
-### :white_check_mark: DO
+**:white_check_mark: DO**
 
-...automate testing as much as you can.
+Automate testing as much as you can.
 
-### :x: DON'T
+**:x: DON'T**
 
-...use plenary.nvim for testing.
+Use plenary.nvim for testing.
 
 Historically, `plenary.test` has been very popular for testing,
 because there was no convenient way for using Neovim as a lua interpreter.
@@ -643,27 +676,27 @@ That has changed with the introduction of `nvim -l` in Neovim 0.9.
 While plenary.nvim is still being maintained, much of its functionality
 is [gradually being upstreamed into Neovim or moved into other libraries](https://github.com/nvim-telescope/telescope.nvim/issues/2552).
 
-### :white_check_mark: DO
+**:white_check_mark: DO**
 
-...use [busted](https://github.com/lunarmodules/busted) for testing,
-which is a lot more powerful. 
+Use [busted](https://github.com/lunarmodules/busted) for testing,
+which is a lot more powerful.
 
 > [!NOTE]
-> 
-> plenary.nvim bundles a *limited subset* of luassert.
+>
+> plenary.nvim bundles a _limited subset_ of luassert.
 
-#### :page_facing_up: Template
+##### :page_facing_up: Template
 
 - [`nvim-lua/nvim-lua-plugin-template`](https://github.com/nvim-lua/nvim-lua-plugin-template/)
 
-#### :books: Further reading
+##### :books: Further reading
 
 - [Using Neovim as Lua interpreter with Luarocks](https://zignar.net/2023/01/21/using-luarocks-as-lua-interpreter-with-luarocks/)
 - [Testing Neovim plugins with Busted](https://hiphish.github.io/blog/2024/01/29/testing-neovim-plugins-with-busted/)
 - [Test your Neovim plugins with luarocks & busted](https://mrcjkb.dev/posts/2023-06-06-luarocks-test.html)
 - [Debugging Lua in Neovim](https://zignar.net/2023/06/10/debugging-lua-in-neovim/)
 
-#### :hammer_and_wrench: Tools
+##### :hammer_and_wrench: Tools
 
 - [`nvim-busted-action`](https://github.com/marketplace/actions/nvim-busted-action)
 - [`nlua`](https://github.com/mfussenegger/nlua)
@@ -672,11 +705,11 @@ which is a lot more powerful.
   - [`HiPhish/neotest-busted`](https://gitlab.com/HiPhish/neotest-busted)
   - [`MisanthropicBit/neotest-busted`](https://github.com/MisanthropicBit/neotest-busted)
 
-## :electric_plug: Integrating with other plugins
+### :electric_plug: Integrating with other plugins
 
-### :white_check_mark: DO
+**:white_check_mark: DO**
 
-...consider integrating with other plugins.
+Consider integrating with other plugins.
 
 For example, it might be useful to add
 a [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) extension
