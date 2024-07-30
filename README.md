@@ -652,6 +652,27 @@ which is a lot more powerful.
 > 
 > plenary.nvim bundles a *limited subset* of luassert.
 
+We advocate for using luarocks + busted
+for testing, primarily for the following reasons:
+
+- **Familiarity:**
+  It is the de facto tried and tested standard in the Lua community,
+  with a familiar API modeled after [rspec](https://rspec.info/).
+- **Consistency:**
+  Having a consistent API makes life easier for
+    - Contributors to your project.
+    - Package managers, who [run test suites](https://github.com/NixOS/nixpkgs/blob/7feaafb5f1dea9eb74186d8c40c2f6c095904429/pkgs/development/lua-modules/overrides.nix#L581)
+    to ensure they don't deliver a broken version of your plugin.
+- **Better reproducibility:**
+  By using luarocks to manage your test dependencies, you can easily
+  pin them. Checking out git repositories is prone to flakes in CI
+  and "it works on my machine" issues.
+
+> [!TIP]
+>
+> For combining busted with other test frameworks,
+> check out our [busted interop examples](https://github.com/nvim-neorocks/busted-interop-examples).
+
 #### :page_facing_up: Template
 
 - [`nvim-lua/nvim-lua-plugin-template`](https://github.com/nvim-lua/nvim-lua-plugin-template/)
