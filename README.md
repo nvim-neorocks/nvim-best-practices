@@ -667,6 +667,11 @@ for testing, primarily for the following reasons:
   By using luarocks to manage your test dependencies, you can easily
   pin them. Checking out git repositories is prone to flakes in CI
   and "it works on my machine" issues.
+- **Dependency management**:
+  With luarocks, you have the whole
+  ecosystem of Lua modules at your
+  fingertips, making it easy to manage and
+  integrate dependencies for your project.
 
 > [!TIP]
 >
