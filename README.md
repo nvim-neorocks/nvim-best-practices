@@ -613,14 +613,8 @@ by entering `:h {plugin}`.
 
 #### :hammer_and_wrench: Tools
 
+- [vimcats](https://github.com/mrcjkb/vimcats)
 - [panvimdoc](https://github.com/kdheepak/panvimdoc)
-- [lemmy-help](https://github.com/numToStr/lemmy-help)
-
-> [!IMPORTANT]
->
-> `lemmy-help` is a nice tool, but it hasn't been maintained in years.
-> It is no longer fully compatible with LuaCATS, which has diverged
-> from EmmyLua.
 
 #### :books: Further reading
 
