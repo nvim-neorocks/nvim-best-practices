@@ -613,7 +613,7 @@ by entering `:h {plugin}`.
 
 #### :hammer_and_wrench: Tools
 
-- [vimcats](https://github.com/mrcjkb/vimcats)
+- [vimCATS](https://github.com/mrcjkb/vimcats)
 - [panvimdoc](https://github.com/kdheepak/panvimdoc)
 
 #### :books: Further reading
