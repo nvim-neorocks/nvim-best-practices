@@ -6,8 +6,11 @@
 
 > [!NOTE]
 >
-> For a guide to using Lua in Neovim,
-> please refer to [`:h lua-intro`](https://neovim.io/doc/user/lua.html).
+> - For a guide to using Lua in Neovim,
+>   please refer to [`:h lua-intro`](https://neovim.io/doc/user/lua.html).
+>
+> - For an example based on this guide, check out
+    [@ColinKennedy's plugin template](https://github.com/ColinKennedy/nvim-best-practices-plugin-template).
 
 ## :safety_vest: Type safety
 
