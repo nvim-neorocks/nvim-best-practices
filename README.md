@@ -86,7 +86,13 @@ and implement completions for each subcommand.
   ![](https://github.com/mrcjkb/nvim-best-practices/assets/12857160/e8c8de05-f2aa-477b-82e5-f983775d5fd3)
 </details>
 
-Here's an example of how to implement completions.
+> [!TIP]
+>
+> There exists a Lua library, [`mega.cmdparse`](https://github.com/ColinKennedy/mega.cmdparse),
+> which can take care of much of the boilerplate for you
+> and comes with many features.
+
+Here's a basic example of how to implement completions manually.
 In this example, we want to 
 
 - provide *subcommand completions* if the user has typed 
