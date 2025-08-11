@@ -701,6 +701,43 @@ for testing, primarily for the following reasons:
   - [`HiPhish/neotest-busted`](https://gitlab.com/HiPhish/neotest-busted)
   - [`MisanthropicBit/neotest-busted`](https://github.com/MisanthropicBit/neotest-busted)
 
+## :moon: Lua compatibility
+
+### :x: DON'T
+
+...use LuaJIT extensions without explicitly stating that your plugins requires Neovim
+built with LuaJIT.
+
+LuaJIT adds several [extension modules](https://luajit.org/extensions.html) to the Lua 5.1 API.
+It can be tempting to use them, as Neovim is typically bundled with a LuaJIT script engine.
+However, [Neovim officially only supports the Lua 5.1 API](https://neovim.io/doc/user/lua.html#lua-luajit)
+and on some distributions may be shipped with Lua 5.1 instead of LuaJIT.
+If you use LuaJIT extension modules[^1], your plugin will not be compatible
+with these Neovim distributions.
+
+[^1]: An exception is the `bit` extension, for which Neovim provides a fallback implementation.
+
+### :white_check_mark DO
+
+...use the Lua 5.1 API if you can, so that your plugin is compatible with all Neovim builds.
+
+- You can always rewrite code that uses enhanced standard library functions
+  and extensions from Lua 5.2 (such as `goto`) to use the Lua 5.1 API.
+- Instead of `ffi`, consider a statically linked Lua wrapper written in C
+  or consider using [mlua](https://docs.rs/mlua/latest/mlua/) for native Lua
+  bindings to Rust libraries.
+
+> [!TIP]
+>
+> You can add `"runtime.version": "Lua 5.1",` to your `.luarc.json` to tell
+> your language server/type checker to emit warnings when using features
+> that are not supported by Lua 5.1.
+
+> [!TIP]
+>
+> If you need LuaJIT extensions for certain features, you should gate them
+> behind a `if jit then ...` check.
+
 ## :electric_plug: Integrating with other plugins
 
 ### :white_check_mark: DO
