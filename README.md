@@ -9,13 +9,17 @@
 > - For a guide to using Lua in Neovim,
 >   please refer to [`:h lua-intro`](https://neovim.io/doc/user/lua.html).
 >
+> - Parts of this guide have been upstreamed to Neovim.
+>   See `:h lua-plugin` in Neovim (nightly).
+>
 > - For an example based on this guide, check out
     [@ColinKennedy's plugin template](https://github.com/ColinKennedy/nvim-best-practices-plugin-template).
 
 ## :safety_vest: Type safety
 
-Lua, as a dynamically typed language, is great for configuration.
-It provides virtually immediate feedback.
+Lua, as a dynamically typed language, is great for configuration. It provides
+virtually immediate feedback.
+But for larger projects, this can be a double-edged sword.
 
 ### :x: DON'T
 
@@ -30,7 +34,11 @@ catch potential bugs in your CI before your plugin's users do.
 #### :hammer_and_wrench: Tools
 
 - [lua-typecheck-action](https://github.com/marketplace/actions/lua-typecheck-action)
-- [llscheck](https://github.com/jeffzi/llscheck)
+- [lux-cli](https://nvim-neorocks.github.io/)
+  - `lx check` for static type checking using emmlylua-analyzer-rust
+  - `lx lint` for linting with luacheck
+- [emmylua-analyzer-rust](https://github.com/EmmyLuaLs/emmylua-analyzer-rust)
+- [lua-language-server](https://github.com/LuaLS/lua-language-server)
 - [luacheck](https://github.com/mpeterv/luacheck) for additional linting.
 - [lazydev.nvim](https://github.com/folke/lazydev.nvim)
 
@@ -207,8 +215,12 @@ vim.api.nvim_create_user_command("Rocks", my_cmd, {
 
 ### :x: DON'T
 
-...create any keymaps automatically (unless they are not controversial).
-This can easily lead to conflicts.
+...create excessive keymaps automatically. Doing so can conflict with user mappings.
+
+> [!NOTE]
+>
+> An example for uncontroversial keymaps are buffer-local mappings for
+> specific file types or floating windows, or `<Plug>` mappings.
 
 ### :x: DON'T
 
@@ -238,7 +250,7 @@ This can easily lead to conflicts.
 In your plugin:
 
 ```lua
-vim.keymap.set("n", "<Plug>(MyPluginAction)", function() print("Hello") end, { noremap = true })
+vim.keymap.set("n", "<Plug>(MyPluginAction)", function() print("Hello") end)
 ```
 
 In the user's config:
@@ -252,20 +264,22 @@ vim.keymap.set("n", "<leader>h", "<Plug>(MyPluginAction)")
 > Some benefits of `<Plug>` mappings over exposing a lua function:
 > 
 > - You can enforce options like `expr = true`.
-> - Expose functionality only or specific modes (`:h map-modes`).
-> - Expose different behaviour for different modes with
->   a single `<Plug>` mapping.
+> - Use `vim.keymap`'s built-in mode handling to expose functionality 
+>   only for specific modes (`:h map-modes`).
+> - Handle different map-modes differently with a single mapping, without
+>   adding mode checks to the underlying implementation.
+> - Detect user-defined mappings through `hasmapto()` before creating defaults.
 
 For example, in your plugin:
 
 ```lua
 vim.keymap.set("n", "<Plug>(SayHello)", function() 
     print("Hello from normal mode") 
-end, { noremap = true })
+end)
 
 vim.keymap.set("v", "<Plug>(SayHello)", function() 
     print("Hello from visual mode") 
-end, { noremap = true })
+end)
 ```
 
 In the user's config:
@@ -300,7 +314,7 @@ in order to be able to use your plugin.
 >
 > - If you still disagree, feel free to open an issue.
 
-These are the rare cases in which a `setup` function 
+These are the rare cases in which a `setup` function
 for initialization could be useful:
 
 - You want your plugin to be compatible with Neovim <= 0.6.
@@ -309,9 +323,25 @@ for initialization could be useful:
 
 ### :white_check_mark: DO
 
-- Cleanly separate configuration and initialization.
+- Strictly separate configuration and initialization to allow your plugin
+  to work out of the box.
 - Automatically initialize your plugin *(smartly)*,
   with minimal impact on startup time (see the next section).
+
+Common approaches to a strictly separated configuration are:
+
+- A Lua function, e.g. `setup(opts)` or `configure(opts)`, which only overrides the
+  default configuration and does not contain any initialization logic.
+- A Vimscript compatible table (e.g. in the |vim.g| or |vim.b| namespace) that your
+  plugin reads from and validates at initialization time.
+  See also |lua-vim-variables|.
+
+> [!TIP]
+>
+> You can support both, by providing a function that sets a `vim.g` variable.
+
+Typically, automatic initialization logic is done in a `plugin` or `ftplugin`
+script. See also `:h runtimepath`.
 
 ## :sleeping_bed: Lazy loading
 
@@ -331,6 +361,15 @@ for initialization could be useful:
 ### :white_check_mark: DO
 
 ...think carefully about when which parts of your plugin need to be loaded.
+
+Neovim has a mechanism for every plugin to do its own implicit
+lazy-loading via scripts in the `autoload/` (Vimscript) and `lua/` (Lua)
+directories.
+
+Plugin authors can provide "lazy loading" by
+providing a `plugin/<name>.lua` file which defines their commands and
+keymappings. This file should be small, and should not eagerly `require` the
+rest of your plugin. Commands and mappings should do the `require`.
 
 #### Is there any functionality that is specific to a filetype?
 
@@ -352,7 +391,7 @@ local bufnr = vim.api.nvim_get_current_buf()
 -- do something specific to this buffer, e.g. add a <Plug> mapping or create a command
 vim.keymap.set("n", "<Plug>(MyPluginBufferAction)", function() 
     print("Hello")
-end, { noremap = true, buffer = bufnr, })
+end, { buffer = bufnr, })
 ```
 
 #### Is your plugin *not* filetype-specific, but it likely won't be needed every single time a user opens a Neovim session?
@@ -384,6 +423,9 @@ end, {
   -- ...
 })
 ```
+
+Likewise, if a plugin uses a Lua module as an entrypoint, it should
+defer `require` calls too.
 
 > [!TIP]
 >
@@ -561,14 +603,18 @@ By doing this, you can use the validation with both
 
 ### :white_check_mark: DO
 
-...provide health checks in `lua/{plugin}/health.lua`.
+...provide health checks in `lua/{plugin}/health.lua` to report status checks
+to users. See `:h health-dev`.
 
 Some things to validate:
 
 - User configuration
 - Proper initialization
-- Presence of lua dependencies
+- Presence of Lua dependencies (e.g. other plugins)
 - Presence of external dependencies
+
+It can be useful to provide a template for a minimal configuration, along with
+a guide on how to use it to reproduce issues.
 
 #### :books: Further reading
 
@@ -587,8 +633,12 @@ e.g. because you believe doing so is a commitment to stability.
 
 ### :white_check_mark: DO
 
-...use [SemVer](https://semver.org/) to properly communicate
-bug fixes, new features, and breaking changes.
+- Use [SemVer](https://semver.org/) to properly communicate
+  bug fixes, new features, and breaking changes.
+- Use `vim.deprecate()` or a `---@deprecate` LuaCATS annotation
+  when you need to communicate a future breaking change or discouraged practise.
+  Note that `vim.deprecate()` will fire a deprecation warning based on the Neovim
+  version, not your plugin's version.
 
 #### :books: Further reading
 
