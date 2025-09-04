@@ -767,7 +767,7 @@ with these Neovim distributions.
 
 [^1]: An exception is the `bit` extension, for which Neovim provides a fallback implementation.
 
-### :white_check_mark DO
+### :white_check_mark: DO
 
 ...use the Lua 5.1 API if you can, so that your plugin is compatible with all Neovim builds.
 
